@@ -80,15 +80,14 @@ def verify_binary(path, trusted_certs):
         logging.warning('%s: %s', e, path)
         return
 
-    cert = extract_cert(pe)
+    der = extract_cert(pe)
 
-    if not cert:
+    if der:
+        cert = convert_to_pem(der)
+        if is_valid(cert, trusted_certs):
+            return True
+    else:
         logging.debug('No certificate found: %s', path)
-        return
-
-    if is_valid(cert, trusted_certs):
-        return True
-    return False
 
 
 def convert_to_pem(der):
@@ -205,21 +204,21 @@ def verify_string(cert_string, issuer_string):
 if __name__ == '__main__':
     args = parse_args()
 
-    pe_path = os.path.abspath(args.path)
-    root_path = os.path.abspath(args.path)
+    pe_path = os.path.abspath(args.pe_path)
+    root_path = os.path.abspath(args.root_path)
 
     # gather binaries
     binaries = []
     roots = []
     if os.path.isdir(pe_path):
-        for f in os.listdir(root_path):
-            if os.path.isfile(os.path.join(root_path, f)):
-                binaries.append(os.path.join(root_path, f))
+        for f in os.listdir(pe_path):
+            if os.path.isfile(os.path.join(pe_path, f)):
+                binaries.append(os.path.join(pe_path, f))
             if f.startswith('.'):
                 continue
 
     # gather roots
-    elif os.path.isdir(root_path):
+    if os.path.isdir(root_path):
         for f in os.listdir(root_path):
             if os.path.isfile(os.path.join(root_path, f)):
                 roots.append(os.path.join(root_path, f))
