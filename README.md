@@ -1,5 +1,5 @@
 # Hancock
-Verify digitally signed files
+Extract and verify certificates from signed binaries
 
 # Setup
 ```
