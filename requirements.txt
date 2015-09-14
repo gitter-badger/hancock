@@ -1,1 +1,4 @@
 pefile==1.2.10.post114
+cryptography==1.0.1
+pyopenssl==0.15.1
+requests==2.7.0
